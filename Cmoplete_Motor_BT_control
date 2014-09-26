@@ -1,0 +1,143 @@
+/****************************************************************************
+
+* Copyright(C) : National Central University ROD Lab Jen Hao Chen (Howard)                                                
+* Create Date  : 2014/07/28 by Howard Chen                                                           
+* Modified Date: 2014/09/25 by Howard Chen                                                          
+* Abstract     : This program will let you test the connection of phone and the buletooth module on robot.
+                    You could simply use the botton on the phone to send commend and make the robot
+                    to take action, such as forward, backward. turn right and turn left.                                                               
+* Reference    : None       
+                                                                                             
+/*****************************************************************************/
+
+const int motorIn1 = 4;
+const int motorIn2 = 5;
+const int motorIn3 = 6;      
+const int motorIn4 = 7;       
+
+
+void setup() 
+{
+    Serial.begin(9600);     //  Make sure the baud rate is 9600
+    pinMode(motorIn1, OUTPUT);
+    pinMode(motorIn2, OUTPUT);
+    pinMode(motorIn3, OUTPUT);
+    pinMode(motorIn4, OUTPUT);
+}
+
+void loop() 
+{
+    if(Serial.available())  //  If there are any data receieved
+    {  
+        char cmd = Serial.read();
+        switch (cmd) 
+        {
+            case 'w':        // 接收到'f'，前進。
+            forward();
+            break;
+
+            case 'x':        // 接收到'b'，後退。
+            backward();
+            break;
+
+            case 'a':        // 接收到'l'，左轉。
+            left();
+            break;
+
+            case 'd':        // 接收到'r'，右轉。
+            right();
+            break;
+
+            case 's':
+            motorstop();    // 停止馬達
+            break;
+        }
+        Serial.flush();
+    }
+    delay(10); 
+}  
+
+
+
+/*********************************************************************************
+
+ * Function Name: motorstop
+ * Discription: This function will send the commend to the motor driver and stop.
+ * Communication protocol: digital write
+
+ *********************************************************************************/
+void motorstop()
+{
+  digitalWrite(motorIn1, LOW);
+  digitalWrite(motorIn2, LOW);
+  digitalWrite(motorIn3, LOW);
+  digitalWrite(motorIn4, LOW);
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: motorstop
+ * Discription: This function will send the commend to the motor driver and forward.
+ * Communication protocol: digital write
+
+ *********************************************************************************/
+void forward() 
+{
+  digitalWrite(motorIn1, HIGH );
+  digitalWrite(motorIn2, LOW);
+  digitalWrite(motorIn3, HIGH);
+  digitalWrite(motorIn4, LOW);
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: backward
+ * Discription: This function will send the commend to the motor driver and backward
+ * Communication protocol: digital write
+
+ *********************************************************************************/
+void backward()  
+{
+  digitalWrite(motorIn1, LOW);
+  digitalWrite(motorIn2, HIGH);
+  digitalWrite(motorIn3, LOW);
+  digitalWrite(motorIn4, HIGH);
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: right
+ * Discription: This function will send the commend to the motor driver and turn right.
+ * Communication protocol: digital write
+
+ *********************************************************************************/
+void right()
+{
+  digitalWrite(motorIn1, LOW);
+  digitalWrite(motorIn2, HIGH);
+  digitalWrite(motorIn3, HIGH);
+  digitalWrite(motorIn4, LOW);
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: left
+ * Discription: This function will send the commend to the motor driver and turn left.
+ * Communication protocol: digital write
+
+ *********************************************************************************/
+void left()
+{
+  digitalWrite(motorIn1, HIGH);
+  digitalWrite(motorIn2, LOW);
+  digitalWrite(motorIn3, LOW);
+  digitalWrite(motorIn4, HIGH);
+}
