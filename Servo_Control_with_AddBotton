@@ -1,0 +1,122 @@
+/****************************************************************************
+
+* Copyright(C) : National Central University ROD Lab Jen Hao Chen (Howard)                                                   
+* Create Date  : 2014/07/28 by Howard Chen                                                           
+* Modified Date: 2014/09/25 by Howard Chen                                                          
+* Abstract     : This program will allow you to control the servo motor via phone or com port.
+                    At first when you insert "1", the servo motor speed will automatically start
+                    from 0 to maixmun and back to 0. Then you could use commend to control the speed.                                                           
+* Reference    : None       
+                                                                                             
+/*****************************************************************************/
+
+#include <Servo.h> 
+Servo myservo;
+int speed = 0;
+int Stop  = 193;
+int UnderStop = 190;
+int Maximun_For = 195;
+boolean a = 0;
+
+void setup() 
+{
+    Serial.begin(9600);
+    myservo.attach(3); 
+}
+
+void loop() 
+{    
+    if (a==0)
+    {
+        ServoStartUp();
+    }
+
+    else
+    {
+        BluetoothCntrl();
+    }
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: ServoStartUp
+ * Discription: This function will let the servo warm up form stop to speed up. 
+ * Output: 
+ * Communication protocol: Digital signal
+ * Arduino input port: 
+ * Unit: 
+
+ *********************************************************************************/
+void ServoStartUp()
+{
+        Serial.println("System ready!!! Hit 1");
+        do
+        {
+            if(Serial.read()=='1')
+            break;
+        }
+        while(1);
+        
+        Serial.println("Throttle up");
+        for(speed = UnderStop; speed<= Maximun_For; speed+=1)
+        {
+            setSpeed(speed);
+            Serial.println(speed);
+            delay(100);
+        }
+        setSpeed(UnderStop);
+        a=1;
+}
+
+
+
+/*********************************************************************************
+
+ * Function Name: BluetoothCntrl
+ * Discription: This function will let you to control the speed by clicking the botton on the phone.
+                    There are three botton on the phone. One is stop, another is speed up and 
+                    the other is speed down.
+ * Communication protocol: Bluetooth UART.
+ * Arduino input port: 
+ * Unit: 
+
+ *********************************************************************************/
+
+void BluetoothCntrl()
+{
+    if(Serial.available())
+        {
+            int insert = Serial.read();
+            switch (insert)
+            {
+                case 'e' :
+                speed = Stop;
+                setSpeed(speed);
+                Serial.println(speed);
+                break;
+
+                case 'a' :
+                speed = speed+3;
+                setSpeed(speed);
+                Serial.println(speed);
+                break;
+
+                case'd' :
+                speed = speed-3;
+                setSpeed(speed);
+                Serial.println(speed);
+                break;   
+            }
+        }    
+    }
+}
+
+
+void setSpeed(int speed)
+{
+    int val = map(speed,0,500,0,180);
+    myservo.write(val);
+}
+
