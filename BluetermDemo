@@ -1,0 +1,42 @@
+/****************************************************************************
+
+* Copyright(C) : National Central University ROD Lab Jen Hao Chen (Howard)                                                   
+* Create Date  : 2014/07/28 by Howard Chen                                                           
+* Modified Date: 2014/09/25 by Howard Chen                                                          
+* Abstract     : This program will test the connection of the phone and Arduino borad via 
+                    bluetooth module. This program will let the led on Arduino borad to turn on
+                    and turn off depends on the botton that you touch on phone.                                                                  
+* Reference    : None       
+                                                                                             
+/*****************************************************************************/
+
+void setup()
+    {
+        Serial.begin(9600);
+        pinMode(13, OUTPUT);
+    }
+
+void loop() 
+{
+    if(Serial.available())
+    {
+        unsigned char charreceived = Serial.read();
+        switch(charreceived)
+        {
+            case '1':
+            digitalWrite(13, HIGH);
+            Serial.println("Arduino Led On");
+            break;
+
+            case '0':
+            digitalWrite(13, LOW);
+            Serial.println("Arduino Led Off");
+            break;
+            
+            default:
+            break;
+        }
+        Serial.flush();
+    }
+    delay(10);
+}  
