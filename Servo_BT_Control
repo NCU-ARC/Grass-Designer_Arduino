@@ -1,0 +1,75 @@
+/****************************************************************************
+
+* Copyright(C) : National Central University ROD Lab Jen Hao Chen (Howard)                                                   
+* Create Date  : 2014/07/28 by Howard Chen                                                           
+* Modified Date: 2014/09/25 by Howard Chen                                                          
+* Abstract     : This program will test the connection of the phone and Arduino borad via 
+                    bluetooth module. This program will let the led on Arduino borad to turn on
+                    and turn off depends on the botton that you touch on phone.                                                                  
+* Reference    : None       
+                                                                                             
+/*****************************************************************************/
+
+#include <Servo.h> 
+Servo myservo;
+byte decide = 0;
+
+void setSpeed(int speed){
+  int val = map(speed,0,500,0,180);
+  myservo.write(val);
+}
+
+void setup() {
+  Serial.begin(9600);
+  myservo.attach(9); 
+}
+
+void loop() {
+  Serial.println("System ready!!! Hit 1");
+  do{if(Serial.read()=='1')
+       break;
+  }while(1);
+  
+    int speed;
+    Serial.println("Throttle up");
+    
+    for(speed = 190; speed<=195; speed+=1){  
+      setSpeed(speed);
+      Serial.println(speed);
+      delay(100);
+    }
+    setSpeed(190);
+    Serial.println(speed);
+    Serial.println(decide);
+    
+    do{
+      if(Serial.available()){    
+         if(Serial.read()>decide){
+            decide = Serial.read();
+            Serial.print("decide =");
+            Serial.println(decide, DEC);
+            speed = speed+3;
+            setSpeed(speed);
+            Serial.print("speed =");
+            Serial.println(speed);} //if
+          
+         else if(Serial.read()<decide){
+            decide = Serial.read();
+            Serial.print("decide =");
+            Serial.println(decide, DEC);
+            speed = speed-3;
+            setSpeed(speed);
+            Serial.print("speed =");
+            Serial.println(speed);}  //else if
+            
+            }    // for if(Serial.available()
+          
+      
+     }while(1);
+   
+  
+}
+
+
+
+
